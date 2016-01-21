@@ -1,18 +1,13 @@
 #!/bin/bash
 
-[ "$1" ] || {
-	echo "
-$0 GEM_PACKAGE1 [GEM_PACKAGE2 [...]] [-- DEB_DEPENDENCY [...]]
+set -e
+DEFAULT_IMAGE="sensu-fpm"
+DEFAULT_TAG="latest"
 
-Examples:
-	$0 mysql -- libmysqlclient-dev
-	$0 inifile
-	$0 mysql inifile -- libmysqlclient-dev
-"
-	exit 1
-}
+[[ -n "${1}" ]] || _die "Please take a look to the README file" 1
 
-mkdir -p $PWD/out
+[[ -d "${PWD}/out" ]] || mkdir -p ${PWD}/out
 
-docker build -t sensu-fpm .
-docker run -i -t -v $PWD/out:/out sensu-fpm "$@"
+docker build -t ${DEFAULT_IMAGE}:${DEFAULT_TAG} .
+docker run -i -t -v ${PWD}/out:/out ${DEFAULT_IMAGE}:${DEFAULT_TAG} "${@}"
+
