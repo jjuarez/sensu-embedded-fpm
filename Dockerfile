@@ -8,7 +8,7 @@ RUN apt-get update
 RUN apt-get install -qqy sensu
 RUN apt-get install -qqy build-essential
 RUN apt-get install -qqy ruby ruby-dev rubygems
-RUN apt-get install -qqy postgresql-9.1 postgresql-client-9.1 postgresql-server-dev-9.1 libpq-dev
+RUN apt-get install -qqy postgresql-9.1 postgresql-client-9.1 postgresql-server-dev-9.1 libpq libpq-dev
 
 RUN gem install fpm --no-ri --no-rdoc
 ADD fpm_build.sh /fpm_build.sh
