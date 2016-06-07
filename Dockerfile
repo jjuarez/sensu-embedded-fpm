@@ -1,15 +1,21 @@
 FROM debian:wheezy
+MAINTAINER Tuenti.com <jjuarez@tuenti.com>
 
-RUN apt-get update -qq && \
-    apt-get install -y apt-utils && \
-    apt-get install -y build-essential && \
-    apt-get install -y bash && \
-    apt-get install -y ruby ruby-dev rubygems && \
-    apt-get install -y curl
-RUN curl -q http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add -
+ARG fpm_version='1.6.0'
+ARG sensu_version='0.19.2-1'
+
+RUN apt-get update  -qqy
+RUN apt-get upgrade -qqy
+RUN apt-get install -qqy apt-utils
+RUN apt-get install -qqy build-essential wget ruby ruby-dev rubygems rake
+
+RUN wget -q -O - http://repos.sensuapp.org/apt/pubkey.gpg | apt-key add -
 RUN echo "deb http://repos.sensuapp.org/apt sensu main" > /etc/apt/sources.list.d/sensu.list
-RUN apt-get update && \
-    apt-get install -qy sensu=0.19.2-1
+RUN apt-get update -y && \
+    apt-get install -y sensu=$sensu_version
 
-ADD fpm_build.sh /fpm_build.sh
-ENTRYPOINT ["/fpm_build.sh"]
+RUN gem install --no-ri --no-rdoc fpm --version=$fpm_version
+
+ADD pack.sh /usr/local/bin/pack.sh
+ENTRYPOINT ["/usr/local/bin/pack.sh"]
+
